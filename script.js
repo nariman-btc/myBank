@@ -96,16 +96,16 @@ btnScrollTo.addEventListener('click', function (e) {
   const section1Coords = section1.getBoundingClientRect();
   // console.log(section1Coords);
   // console.log(e.target.getBoundingClientRect());
-  console.log(
-    'Текущее прокручивание: х, у',
-    window.pageXOffset,
-    window.pageYOffset
-  );
-  console.log(
-    'Ширина и высота viewport',
-    document.documentElement.clientWidth,
-    document.documentElement.clientHeight
-  );
+  // console.log(
+  //   'Текущее прокручивание: х, у',
+  //   window.pageXOffset,
+  //   window.pageYOffset
+  // );
+  // console.log(
+  //   'Ширина и высота viewport',
+  //   document.documentElement.clientWidth,
+  //   document.documentElement.clientHeight
+  // );
   // window.scrollTo({
   //   left: section1Coords.left + window.pageXOffset,
   //   top: section1Coords.top + window.pageYOffset,
@@ -156,8 +156,7 @@ tabContainer.addEventListener('click', function (e) {
 });
 
 // Анимации потускнения на панели навигации
-
-nav.addEventListener('mouseover', function (e) {
+const navLinksHoverAnimation = function (e, opacity) {
   if (e.target.classList.contains('nav__link')) {
     const linkOver = e.target;
     const siblingLinks = linkOver
@@ -167,28 +166,64 @@ nav.addEventListener('mouseover', function (e) {
     const logoText = linkOver.closest('.nav').querySelector('.nav__text');
 
     siblingLinks.forEach(el => {
-      if (el !== linkOver) el.style.opacity = 0.4;
+      if (el !== linkOver) el.style.opacity = opacity;
     });
-    logo.style.opacity = 0.4;
-    logoText.style.opacity = 0.4;
+    logo.style.opacity = opacity;
+    logoText.style.opacity = opacity;
   }
+};
+nav.addEventListener('mouseover', function (e) {
+  navLinksHoverAnimation(e, 0.4);
 });
 nav.addEventListener('mouseout', function (e) {
-  if (e.target.classList.contains('nav__link')) {
-    const linkOver = e.target;
-    const siblingLinks = linkOver
-      .closest('.nav__links')
-      .querySelectorAll('.nav__link');
-    const logo = linkOver.closest('.nav').querySelector('img');
-    const logoText = linkOver.closest('.nav').querySelector('.nav__text');
-
-    siblingLinks.forEach(el => {
-      if (el !== linkOver) el.style.opacity = 1;
-    });
-    logo.style.opacity = 1;
-    logoText.style.opacity = 1;
-  }
+  navLinksHoverAnimation(e, 1);
 });
+
+// Sticky navigation
+// const section1Coords = section1.getBoundingClientRect();
+// console.log(section1Coords);
+// window.addEventListener('scroll', function (e) {
+//   console.log(window.scrollY);
+
+//   if (window.scrollY > section1Coords.top) {
+//     nav.classList.add('sticky');
+//   } else {
+//     nav.classList.remove('sticky');
+//   }
+// });
+
+// Sticky navigation - Intersection Observer API
+// const observerCallback = function (entries, observer) {
+//   entries.forEach(entry => {
+//     console.log(entry);
+//   });
+// };
+// const observerOptions = {
+//   root: null,
+//   threshold: 0.2,
+// };
+// const observer = new IntersectionObserver(observerCallback, observerOptions);
+// observer.observe(section1);
+const navHeight = nav.getBoundingClientRect().height;
+console.log(navHeight);
+const getStickyNav = function (entries) {
+  const entry = entries[0];
+  console.log(entry);
+  if (!entry.isIntersecting) {
+    nav.classList.add('sticky');
+  } else {
+    nav.classList.remove('sticky');
+  }
+};
+
+const observer = new IntersectionObserver(getStickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+});
+// const header = document.querySelector('.header');
+observer.observe(header);
+
 /*********************************************** */
 // Виды Событий и Обработчиков Событий
 // const alertMouseEnterH1 = function (e) {
