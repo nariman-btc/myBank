@@ -216,13 +216,90 @@ const getStickyNav = function (entries) {
   }
 };
 
-const observer = new IntersectionObserver(getStickyNav, {
+const headerObserver = new IntersectionObserver(getStickyNav, {
   root: null,
   threshold: 0,
   rootMargin: `-${navHeight}px`,
 });
 // const header = document.querySelector('.header');
-observer.observe(header);
+headerObserver.observe(header);
+
+// Появление ччастей сайта
+const allSections = document.querySelectorAll('.section');
+const appearanceSection = function (entries, observer) {
+  const entry = entries[0];
+  console.log(entry);
+  if (!entry.isIntersecting) return;
+  entry.target.classList.remove('section--hidden');
+  observer.unobserve(entry.target);
+};
+const sectionObserver = new IntersectionObserver(appearanceSection, {
+  root: null,
+  threshold: 0.18,
+});
+allSections.forEach(function (section) {
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden');
+});
+
+// Имплементация lazy loading для изображений
+const lazyImages = document.querySelectorAll('img[data-src]');
+console.log(lazyImages);
+
+const loadImages = function (entries, observer) {
+  const entry = entries[0];
+  console.log(entry);
+  if (!entry.isIntersecting) return;
+
+  // Меняем изображение на с высоким разрешением
+
+  entry.target.src = entry.target.dataset.src;
+
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
+  });
+  observer.unobserve(entry.target);
+};
+
+const lazImagesObserver = new IntersectionObserver(loadImages, {
+  root: null,
+  threshold: 0.8,
+});
+lazyImages.forEach(image => lazImagesObserver.observe(image));
+
+// create slider
+
+const slides = document.querySelectorAll('.slide');
+const btnLeft = document.querySelector('.slider__btn--left');
+const btnRight = document.querySelector('.slider__btn--right');
+// const slider = document.querySelector('.slider');
+// slider.style.transform = 'scale(0.7) translateX(1300px)';
+// slider.style.overflow = 'visible';
+let currentSlide = 0;
+const slidesNumber = slides.length;
+const moveToSlide = function (slide) {
+  slides.forEach(
+    (s, index) => (s.style.transform = `translateX(${(index - slide) * 100}%)`)
+  );
+};
+moveToSlide(0);
+
+btnRight.addEventListener('click', function () {
+  if (currentSlide === slidesNumber - 1) {
+    currentSlide = 0;
+  } else {
+    currentSlide++;
+  }
+  moveToSlide(currentSlide);
+});
+btnLeft.addEventListener('click', function () {
+  if (currentSlide === 0) {
+    currentSlide = slidesNumber - 1;
+  } else {
+    currentSlide--;
+  }
+  moveToSlide(currentSlide);
+});
 
 /*********************************************** */
 // Виды Событий и Обработчиков Событий
