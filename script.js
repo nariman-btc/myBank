@@ -205,10 +205,10 @@ nav.addEventListener('mouseout', function (e) {
 // const observer = new IntersectionObserver(observerCallback, observerOptions);
 // observer.observe(section1);
 const navHeight = nav.getBoundingClientRect().height;
-console.log(navHeight);
+// console.log(navHeight);
 const getStickyNav = function (entries) {
   const entry = entries[0];
-  console.log(entry);
+  // console.log(entry);
   if (!entry.isIntersecting) {
     nav.classList.add('sticky');
   } else {
@@ -228,7 +228,7 @@ headerObserver.observe(header);
 const allSections = document.querySelectorAll('.section');
 const appearanceSection = function (entries, observer) {
   const entry = entries[0];
-  console.log(entry);
+  // console.log(entry);
   if (!entry.isIntersecting) return;
   entry.target.classList.remove('section--hidden');
   observer.unobserve(entry.target);
@@ -244,11 +244,11 @@ allSections.forEach(function (section) {
 
 // Имплементация lazy loading для изображений
 const lazyImages = document.querySelectorAll('img[data-src]');
-console.log(lazyImages);
+// console.log(lazyImages);
 
 const loadImages = function (entries, observer) {
   const entry = entries[0];
-  console.log(entry);
+  // console.log(entry);
   if (!entry.isIntersecting) return;
 
   // Меняем изображение на с высоким разрешением
@@ -277,30 +277,65 @@ const btnRight = document.querySelector('.slider__btn--right');
 // slider.style.overflow = 'visible';
 let currentSlide = 0;
 const slidesNumber = slides.length;
+const dotContainer = document.querySelector('.dots');
+const createDots = function () {
+  slides.forEach(function (_, index) {
+    dotContainer.insertAdjacentHTML(
+      'beforeend',
+      `<button class="dots__dot" data-slide="${index}"></button>`
+    );
+  });
+};
+createDots();
+const activateCurrentDot = function (slide) {
+  document
+    .querySelectorAll('.dots__dot')
+    .forEach(dot => dot.classList.remove('dots__dot--active'));
+  document
+    .querySelector(`.dots__dot[data-slide="${slide}"]`)
+    .classList.add('dots__dot--active');
+};
+activateCurrentDot(0);
 const moveToSlide = function (slide) {
   slides.forEach(
     (s, index) => (s.style.transform = `translateX(${(index - slide) * 100}%)`)
   );
 };
 moveToSlide(0);
-
-btnRight.addEventListener('click', function () {
+const nexSlide = function () {
   if (currentSlide === slidesNumber - 1) {
     currentSlide = 0;
   } else {
     currentSlide++;
   }
   moveToSlide(currentSlide);
-});
-btnLeft.addEventListener('click', function () {
+  activateCurrentDot(currentSlide);
+};
+const previousSlide = function () {
   if (currentSlide === 0) {
     currentSlide = slidesNumber - 1;
   } else {
     currentSlide--;
   }
   moveToSlide(currentSlide);
+  activateCurrentDot(currentSlide);
+};
+btnRight.addEventListener('click', nexSlide);
+btnLeft.addEventListener('click', previousSlide);
+
+document.addEventListener('keydown', function (e) {
+  console.log(e);
+  if (e.key === 'ArrowRight') nexSlide();
+  if (e.key === 'ArrowLeft') previousSlide();
 });
 
+dotContainer.addEventListener('click', function (e) {
+  if (e.target.classList.contains('dots__dot')) {
+    const slide = e.target.dataset.slide;
+    moveToSlide(slide);
+    activateCurrentDot(slide);
+  }
+});
 /*********************************************** */
 // Виды Событий и Обработчиков Событий
 // const alertMouseEnterH1 = function (e) {
