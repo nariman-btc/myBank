@@ -338,17 +338,17 @@ dotContainer.addEventListener('click', function (e) {
 });
 
 // DOM Events
-document.addEventListener('DOMContentLoaded', function (e) {
-  console.log('DOM: ', e);
-});
-window.addEventListener('load', function (e) {
-  console.log('Window load', e);
-});
-window.addEventListener('beforeunload', function (e) {
-  e.preventDefault();
-  console.log('window beforeunloaded', e);
-  e.returnValue = '';
-});
+// document.addEventListener('DOMContentLoaded', function (e) {
+//   console.log('DOM: ', e);
+// });
+// window.addEventListener('load', function (e) {
+//   console.log('Window load', e);
+// });
+// window.addEventListener('beforeunload', function (e) {
+//   e.preventDefault();
+//   console.log('window beforeunloaded', e);
+//   e.returnValue = '';
+// });
 
 /*********************************************** */
 // Виды Событий и Обработчиков Событий
