@@ -1,1 +1,1 @@
-# https://nariman-btc.github.io/myBank/
+# https://narimanjs.github.io/myBank/
